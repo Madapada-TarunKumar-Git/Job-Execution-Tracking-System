@@ -2,9 +2,13 @@ package com.myapps.entity;
 
 import com.myapps.domain.ExecutionStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 public class JobExecution {
     @Id
