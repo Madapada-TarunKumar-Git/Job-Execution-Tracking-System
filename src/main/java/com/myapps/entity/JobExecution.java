@@ -1,5 +1,6 @@
 package com.myapps.entity;
 
+import com.myapps.domain.ExecutionStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,8 @@ public class JobExecution {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    private String status; // e.g., SUCCESS, FAILURE, RUNNING, STARTED
+    @Enumerated(EnumType.STRING)
+    private ExecutionStatus status; // e.g., STARTED, SUCCESS, FAILURE
 
     @Column(length = 2000)
     private String errorMessage; // Error message in case of failure
