@@ -1,5 +1,6 @@
 package com.myapps.service;
 
+import com.myapps.domain.MsgSrc;
 import com.myapps.dto.JobRequestDTO;
 import com.myapps.dto.JobResponseDTO;
 import com.myapps.entity.Job;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class JobServiceImpl implements JobService{
     private ModelMapper  modelMapper;
     private JobRepository jobRepository;
+    private MsgSrc msgSrc;
 
     @Override
     public JobResponseDTO registerJob(JobRequestDTO requestDTO) {
@@ -26,7 +28,7 @@ public class JobServiceImpl implements JobService{
     @Override
     public JobResponseDTO getJobById (Long jobId) {
          Job job = jobRepository.findById(jobId)
-                 .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + jobId));
+                 .orElseThrow(() -> new JobNotFoundException(msgSrc.getMessage("JOB.NOT.FOUND",jobId)));
          return modelMapper.map(job, JobResponseDTO.class);
     }
 }

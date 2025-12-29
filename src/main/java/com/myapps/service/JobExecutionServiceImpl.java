@@ -1,6 +1,7 @@
 package com.myapps.service;
 
 import com.myapps.domain.ExecutionStatus;
+import com.myapps.domain.MsgSrc;
 import com.myapps.dto.JobExecutionResponseDTO;
 import com.myapps.entity.Job;
 import com.myapps.entity.JobExecution;
@@ -21,16 +22,16 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     private ModelMapper modelMapper;
     private JobExecutionRepository jobExecutionRepository;
     private JobRepository jobRepository;
+    private MsgSrc msgSrc;
 
     @Override
     public JobExecutionResponseDTO startExecution(Long jobId) {
         Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + jobId));
+                .orElseThrow(() -> new JobNotFoundException(msgSrc.getMessage("JOB.NOT.FOUND",jobId)));
         JobExecution execution = new JobExecution();
         execution.setJob(job);
         execution.setStartTime(LocalDateTime.now());
         execution.setStatus(ExecutionStatus.STARTED);
-        execution.setErrorMessage("Execution failed due to an error.");
         JobExecution savedExecution = jobExecutionRepository.save(execution);
         return modelMapper.map(savedExecution, JobExecutionResponseDTO.class);
     }
@@ -58,7 +59,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     private JobExecution getExecution(Long executionId) {
         return jobExecutionRepository.findById(executionId)
-                .orElseThrow(() -> new ExecutionNotFoundException("Execution not found with id: " + executionId));
+                .orElseThrow(() -> new ExecutionNotFoundException(msgSrc.getMessage("EXECUTION.NOT.FOUND",executionId)));
 
     }
 
