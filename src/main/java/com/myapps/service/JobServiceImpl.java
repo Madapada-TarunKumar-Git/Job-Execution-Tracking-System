@@ -3,6 +3,7 @@ package com.myapps.service;
 import com.myapps.dto.JobRequestDTO;
 import com.myapps.dto.JobResponseDTO;
 import com.myapps.entity.Job;
+import com.myapps.exception.JobNotFoundException;
 import com.myapps.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,5 +21,12 @@ public class JobServiceImpl implements JobService{
         Job savedJob = jobRepository.save(job);
 
         return modelMapper.map(savedJob, JobResponseDTO.class);
+    }
+
+    @Override
+    public JobResponseDTO getJobById (Long jobId) {
+         Job job = jobRepository.findById(jobId)
+                 .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + jobId));
+         return modelMapper.map(job, JobResponseDTO.class);
     }
 }

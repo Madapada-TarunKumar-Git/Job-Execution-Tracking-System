@@ -30,6 +30,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         execution.setJob(job);
         execution.setStartTime(LocalDateTime.now());
         execution.setStatus(ExecutionStatus.STARTED);
+        execution.setErrorMessage("Execution failed due to an error.");
         JobExecution savedExecution = jobExecutionRepository.save(execution);
         return modelMapper.map(savedExecution, JobExecutionResponseDTO.class);
     }
