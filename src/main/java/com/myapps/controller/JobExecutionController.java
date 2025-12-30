@@ -2,6 +2,7 @@ package com.myapps.controller;
 
 import com.myapps.dto.JobExecutionResponseDTO;
 import com.myapps.service.JobExecutionService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/jobs")
 @RequiredArgsConstructor
+@Tag(name = "Job Execution Management", description = "APIs for managing job executions")
 public class JobExecutionController {
     private final JobExecutionService jobExecutionService;
 

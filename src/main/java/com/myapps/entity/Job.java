@@ -7,16 +7,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Table(name = "jobs")
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long jobId;
 
-    @Column(nullable = false, unique = true)
+    @Column(name ="job_name", nullable = false, unique = true)
     private String jobName;
 
     private String jobType;
-    private String ownerTeam;
     private String environment;
+    private String ownerTeam;
 
 }
