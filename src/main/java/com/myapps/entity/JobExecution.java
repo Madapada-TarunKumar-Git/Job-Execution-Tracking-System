@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Table(name = "job_executions")
 public class JobExecution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +23,7 @@ public class JobExecution {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
+    @Column(name = "status_message")
     @Enumerated(EnumType.STRING)
     private ExecutionStatus status; // e.g., STARTED, SUCCESS, FAILURE
 
