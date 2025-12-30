@@ -1,5 +1,6 @@
 package com.myapps.service;
 
+import com.myapps.config.JobMapper;
 import com.myapps.domain.ExecutionStatus;
 import com.myapps.domain.MsgSrc;
 import com.myapps.dto.JobExecutionResponseDTO;
@@ -10,7 +11,6 @@ import com.myapps.exception.JobNotFoundException;
 import com.myapps.repository.JobExecutionRepository;
 import com.myapps.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class JobExecutionServiceImpl implements JobExecutionService {
-    private ModelMapper modelMapper;
+    private JobMapper jobMapper;
     private JobExecutionRepository jobExecutionRepository;
     private JobRepository jobRepository;
     private MsgSrc msgSrc;
@@ -32,9 +32,9 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         execution.setJob(job);
         execution.setStartTime(LocalDateTime.now());
         execution.setStatus(ExecutionStatus.STARTED);
-        JobExecution savedExecution = jobExecutionRepository.save(execution);
-        return modelMapper.map(savedExecution, JobExecutionResponseDTO.class);
+        return jobMapper.map(jobExecutionRepository.save(execution));
     }
+
 
     @Override
     public JobExecutionResponseDTO markSuccess(Long executionId) {
@@ -42,8 +42,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         execution.setEndTime(LocalDateTime.now());
         execution.setStatus(ExecutionStatus.SUCCESS);
         execution.setDurationMs(calculateDuration(execution));
-        JobExecution savedExecution = jobExecutionRepository.save(execution);
-        return modelMapper.map(savedExecution, JobExecutionResponseDTO.class);
+        return jobMapper.map(jobExecutionRepository.save(execution));
     }
 
     @Override
@@ -53,8 +52,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         execution.setStatus(ExecutionStatus.FAILED);
         execution.setErrorMessage(errorMessage);
         execution.setDurationMs(calculateDuration(execution));
-        JobExecution savedExecution = jobExecutionRepository.save(execution);
-        return modelMapper.map(savedExecution, JobExecutionResponseDTO.class);
+        return jobMapper.map(jobExecutionRepository.save(execution));
     }
 
     private JobExecution getExecution(Long executionId) {
