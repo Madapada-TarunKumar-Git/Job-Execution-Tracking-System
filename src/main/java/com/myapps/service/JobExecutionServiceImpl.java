@@ -29,15 +29,12 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     @Override
     public JobExecutionResponseDTO startExecution(Long jobId) {
-        log.info("Job ID to start execution: {}", jobId);
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new JobNotFoundException(msgSrc.getMessage("JOB.NOT.FOUND",jobId)));
-        log.info("Starting execution for Job ID: {}, Job Name: {}", job.getJobId(), job.getJobName());
         JobExecution execution = new JobExecution();
         execution.setJob(job);
         execution.setStartTime(LocalDateTime.now());
         execution.setStatus(ExecutionStatus.STARTED);
-        log.info("Job Execution{}",execution);
         return jobMapper.map(jobExecutionRepository.save(execution));
     }
 
@@ -68,10 +65,15 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     }
 
     private Long calculateDuration(JobExecution execution) {
-        return Duration.between(execution.getStartTime(),
-                execution.getEndTime())
-                .toMillis();
+        LocalDateTime start = execution.getStartTime();
+        LocalDateTime end = execution.getEndTime();
+        if (start == null || end == null) {
+            log.warn("Cannot calculate duration for execution {}: start or end time is null", execution.getExecutionId());
+            return null;
+        }
+        long millis = Duration.between(start, end).toMillis();
+        // Ensure non-negative duration in case clocks are adjusted or times are swapped
+        return Math.max(0L, millis);
     }
 
 }
-

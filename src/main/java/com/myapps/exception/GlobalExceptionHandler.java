@@ -22,37 +22,44 @@ public class GlobalExceptionHandler {
     private final MsgSrc msgSrc;
 
     @ExceptionHandler(ExecutionNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleExecutionNotFoundException(ExecutionNotFoundException ex) {
+    @SuppressWarnings("unused")
+    public ResponseEntity<ErrorResponseDTO> handleExecutionNotFoundException(ExecutionNotFoundException ex, HttpServletRequest request) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                ex.getMessage()
-                );
+                ex.getMessage(),
+                request.getRequestURI()
+        );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(JobNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleJobNotFoundException(JobNotFoundException ex) {
+    @SuppressWarnings("unused")
+    public ResponseEntity<ErrorResponseDTO> handleJobNotFoundException(JobNotFoundException ex, HttpServletRequest request) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                ex.getMessage()
+                ex.getMessage(),
+                request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponseDTO> handleDuplicateResourceException(DuplicateResourceException ex) {
+    @SuppressWarnings("unused")
+    public ResponseEntity<ErrorResponseDTO> handleDuplicateResourceException(DuplicateResourceException ex, HttpServletRequest request) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),
-                ex.getMessage()
+                ex.getMessage(),
+                request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDTO> handleValidationException(MethodArgumentNotValidException ex) {
+    @SuppressWarnings("unused")
+    public ResponseEntity<ErrorResponseDTO> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .findFirst()
@@ -61,18 +68,21 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                errorMessage
+                errorMessage,
+                request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler()
-    public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
+    @ExceptionHandler(Exception.class)
+    @SuppressWarnings("unused")
+    public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex, HttpServletRequest request) {
         log.error("An unexpected error occurred: ", ex);
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                msgSrc.getMessage("INTERNAL.SERVER.ERROR")
+                msgSrc.getMessage("INTERNAL.SERVER.ERROR"),
+                request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
