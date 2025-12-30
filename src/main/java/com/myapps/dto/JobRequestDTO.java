@@ -1,4 +1,7 @@
 package com.myapps.dto;
 
-public record JobRequestDTO() {
-}
+public record JobRequestDTO(
+        String jobName,
+        String ownerTeam,
+        String environment
+        ) { }
