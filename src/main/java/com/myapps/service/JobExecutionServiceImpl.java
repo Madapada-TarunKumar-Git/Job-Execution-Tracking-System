@@ -11,6 +11,8 @@ import com.myapps.exception.JobNotFoundException;
 import com.myapps.repository.JobExecutionRepository;
 import com.myapps.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -19,19 +21,23 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class JobExecutionServiceImpl implements JobExecutionService {
-    private JobMapper jobMapper;
-    private JobExecutionRepository jobExecutionRepository;
-    private JobRepository jobRepository;
-    private MsgSrc msgSrc;
+    private static final Logger log = LoggerFactory.getLogger(JobExecutionServiceImpl.class);
+    private final JobMapper jobMapper;
+    private final JobExecutionRepository jobExecutionRepository;
+    private final JobRepository jobRepository;
+    private final MsgSrc msgSrc;
 
     @Override
     public JobExecutionResponseDTO startExecution(Long jobId) {
+        log.info("Job ID to start execution: {}", jobId);
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new JobNotFoundException(msgSrc.getMessage("JOB.NOT.FOUND",jobId)));
+        log.info("Starting execution for Job ID: {}, Job Name: {}", job.getJobId(), job.getJobName());
         JobExecution execution = new JobExecution();
         execution.setJob(job);
         execution.setStartTime(LocalDateTime.now());
         execution.setStatus(ExecutionStatus.STARTED);
+        log.info("Job Execution{}",execution);
         return jobMapper.map(jobExecutionRepository.save(execution));
     }
 
