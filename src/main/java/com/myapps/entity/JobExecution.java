@@ -25,7 +25,7 @@ public class JobExecution {
 
     @Column(name = "status_message")
     @Enumerated(EnumType.STRING)
-    private ExecutionStatus status; // e.g., STARTED, SUCCESS, FAILURE
+    private ExecutionStatus status; // e.g., STARTED,In_PROGRESS, SUCCESS, FAILURE
 
     @Column(length = 2000)
     private String errorMessage; // Error message in case of failure
