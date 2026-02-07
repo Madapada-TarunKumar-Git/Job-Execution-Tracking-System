@@ -15,14 +15,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private final MsgSrc msgSrc;
+    GlobalExceptionHandler(MsgSrc msgSrc){
+        this.msgSrc = msgSrc;
+    }
 
     @ExceptionHandler(ExecutionNotFoundException.class)
-    @SuppressWarnings("unused")
     public ResponseEntity<ErrorResponseDTO> handleExecutionNotFoundException(ExecutionNotFoundException ex, HttpServletRequest request) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 LocalDateTime.now(),
@@ -34,7 +36,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(JobNotFoundException.class)
-    @SuppressWarnings("unused")
     public ResponseEntity<ErrorResponseDTO> handleJobNotFoundException(JobNotFoundException ex, HttpServletRequest request) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 LocalDateTime.now(),
